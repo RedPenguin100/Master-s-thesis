@@ -3,6 +3,9 @@ title: "Summary of Xiaoyan Zhang's Master's Thesis"
 author: "Michael Kovaliov"
 date: "22-2-2021"
 output: pdf_document
+editor_options: 
+  markdown: 
+    wrap: sentence
 ---
 
 ```{r setup, include=FALSE}
@@ -10,38 +13,46 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Introduction
+
 The idea of this thesis:
 
 In the first chapter, basic ideas regarding volatility modeling are presented.
 In the second chapter, we introduce the concept of fractional Brownian motion(fBm).
 In the third chapter we talk about an actual model of rough volatility, which relies heavily on fBm.
-In the fourth chapter we look at an extension for derivative pricing. 
+In the fourth chapter we look at an extension for derivative pricing.
 
 ## Summary of chapter 1
 
 In chapter 1 there were 3 main parts
 
-The first talked about some generic facts about volatility and modeling assets, both theoretical and practical aspects. One practical aspect which is sometimes neglected in theory is leverage - the more debt a firm has w.r.t. its earning, its volatility is going to be higher. In practice volatility also clusters and has a long memory. 
+The first talked about some generic facts about volatility and modeling assets, both theoretical and practical aspects.
+One practical aspect which is sometimes neglected in theory is leverage - the more debt a firm has w.r.t. its earning, its volatility is going to be higher.
+In practice volatility also clusters and has a long memory.
 
-The next part talked about how to actually find the volatility of a stock price. One method was using the derived from the Black & Scholes framework. This is inconsistent with practice because in practice the volatility is not constant.Another idea was time-dependent volatility model, which is still built upon B&S. It considers the dynamic of a stock price with time-dependent(yet deterministic) volatility:
+The next part talked about how to actually find the volatility of a stock price.
+One method was using the derived from the Black & Scholes framework.
+This is inconsistent with practice because in practice the volatility is not constant.Another idea was time-dependent volatility model, which is still built upon B&S.
+It considers the dynamic of a stock price with time-dependent(yet deterministic) volatility:
 
- 
 $\displaystyle \frac{dS(t)}{S(t)} = \mu dt + \sigma(t)dW(t)$
 
-Merton(1973) proposed the pricing formula using dependent volatility. If we use the annualized variance: 
+Merton(1973) proposed the pricing formula using dependent volatility.
+If we use the annualized variance:
 
 $\displaystyle \sigma_a=\sqrt{\frac{1}{T-t}\int_t^T\sigma^2(\tau)d\tau}$
 
-And view $\sigma_a$ as a constant dependent upon $t$ and $T$, you can plug it into B&S and receive a formula which when solved gives you time-dependent volatility. Local volatility and mixture models were also mentioned in this part.
+And view $\sigma_a$ as a constant dependent upon $t$ and $T$, you can plug it into B&S and receive a formula which when solved gives you time-dependent volatility.
+Local volatility and mixture models were also mentioned in this part.
 
+The last part talks about the following model: $\displaystyle \frac{dS(t)}{S(t)} = \mu_t dt + \sigma(t)dW(t)_1$
 
-The last part talks about the following model:
-$\displaystyle \frac{dS(t)}{S(t)} = \mu_t dt + \sigma(t)dW(t)_1$
+The stock price is driven by the wiener process $W_1$ and $\mu_t$ is the drift term.
+However the volatility $\sigma(t)$ now is also stochastic.
+Typically the volatility will be governed by a SDE which is driven by another Wiener process $W_2$ that is correlated with $W_1$.
+The author then described popular SDEs that are used with this model.
+For example:
 
-The stock price is driven by the wiener process $W_1$ and $\mu_t$ is the drift term. However the volatility $\sigma(t)$  now is also stochastic. Typically the volatility will be governed by a SDE which is driven 
-by another Wiener process $W_2$ that is correlated with $W_1$. The author then described popular SDEs that are used with this model. For example:
-
-* Scott(1987)
+-   Scott(1987)
 
 $\displaystyle dS(t) = \mu_1S(t)dt + \sigma(t)S(t)^{\kappa}dW_1(t),$
 
@@ -51,4 +62,18 @@ and that is the end of chapter 1.
 
 ## Summary of chapter 2
 
-Here it gets interesting. The idea is to replace the usual Brownian motion with a fractional Brownian motion(fBm) in a SDE model. 
+Here it gets interesting.
+The idea is to replace the usual Brownian motion with a fractional Brownian motion(fBm) in a SDE model.
+
+A short preliminary for myself:
+
+### Gaussian process
+
+***Definition Gaussian random variable** An* $\mathbb{R}^d$-valued random variable $\xi=(\xi_1,...,\xi_d)$ is called a Gaussian random variable if, for any $y\in\mathbb{R}^d$, $<y,\xi>$ is a real-valued Gaussian random variable.
+This is equivalent to saying that $\xi$ has characteristic function $\displaystyle \phi_\xi(y)=\mathbb{E}^{i<y,\xi>}=exp(i\mathbb{E}<y,\xi>-\frac{Var(<y,\xi>)}{2})$, $\forall y\in\mathbb{R}^d$
+
+### Elementary properties of fBm
+
+***Definition: fraction Brownian motion (fBm)** A centered Gaussian process* $B^H=\{B_t^H,t\in\mathbb{R}\}$ is called a two-sided fractional Brownian motion (fBm) with Hurst parameter $H\in(0,1)$ if it has covariance function:
+
+$\displaystyle R_H(t,s)=E[B_t^HB_s^H] = \frac{1}{2}(s^{2H}+t^{2H}-|t-s|^{2H})$ $s,t\in\mathbb{R}$
