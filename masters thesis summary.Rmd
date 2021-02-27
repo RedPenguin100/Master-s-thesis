@@ -64,16 +64,103 @@ and that is the end of chapter 1.
 
 Here it gets interesting.
 The idea is to replace the usual Brownian motion with a fractional Brownian motion(fBm) in a SDE model.
+To do that we need to define an integral on fBm, and figure out a lot of basic properties.
+Lets do it!
 
 A short preliminary for myself:
 
-### Gaussian process
+### (Preliminary) Gaussian process
 
 ***Definition Gaussian random variable** An* $\mathbb{R}^d$-valued random variable $\xi=(\xi_1,...,\xi_d)$ is called a Gaussian random variable if, for any $y\in\mathbb{R}^d$, $<y,\xi>$ is a real-valued Gaussian random variable.
-This is equivalent to saying that $\xi$ has characteristic function $\displaystyle \phi_\xi(y)=\mathbb{E}^{i<y,\xi>}=exp(i\mathbb{E}<y,\xi>-\frac{Var(<y,\xi>)}{2})$, $\forall y\in\mathbb{R}^d$
+
+If $\xi$ is an $\mathbb{R}^d$-valued Gaussian random variable, we define, for $j=1,...,d$,$m_j=\mathbb{E}[\xi_j]$.
+Then $m=(m_1,...,m_d)$ is called the mean of $\xi$.
+The matrix $\sum=(\sum_{jk})$ defined by
+
+$$
+\sum_{jk} = \mathbb{E}[(\xi_j-m_j)(\xi_k-m_k)]
+$$
+
+is called the covariance matrix of $\xi$.
+
+A real-values process $X=(X_t:t\ge0)$ is called a **Gaussian process** if, for any $n\ge1$ and $0\le t_1 \le... \le t_n < \infty$, $(X_{t_1},...,X_{t_n})$ is a Gaussian random variable.
+
+If $X$ is a Gaussian process, we may define:
+
+$$
+m(t) = \mathbb{E}[X_t], \quad t\ge0
+$$
+
+$$
+\sum(s,t)=\mathbb{E}[(X_s-m(s))(X_t-m(t))],\quad s,t\ge0
+$$
+
+$m(t)$ is the mean function, $\sum(s,t)$ is called the covariance kernel.
+If $\forall t:m(t)=0$ then $X$ is called a centered Gaussian process.
+The Gaussian process is characterized by mean and covariance kernel.
+
+**Proposition:** A standard 1-dimensional Brownian motion is a centered Gaussian process with covariance kernel $\sum(s,t)=s \wedge t = min(s,t)$
+
+So a Brownian motion is actually a centered Gaussian process, but not the only one.
+We will now see other forms of Gaussian processes.
 
 ### Elementary properties of fBm
 
 ***Definition: fraction Brownian motion (fBm)** A centered Gaussian process* $B^H=\{B_t^H,t\in\mathbb{R}\}$ is called a two-sided fractional Brownian motion (fBm) with Hurst parameter $H\in(0,1)$ if it has covariance function:
 
 $\displaystyle R_H(t,s)=E[B_t^HB_s^H] = \frac{1}{2}(s^{2H}+t^{2H}-|t-s|^{2H})$ $s,t\in\mathbb{R}$
+
+As we have previously seen, this fact (centered+covariance) uniquely determines the distribution.
+
+**Definition: homogeneous function** A *homogeneous function* $f$ of variables $x$ and $y$ is a real-values function that satisfies
+
+$$
+f(tx,ty)=t^kf(x,y)
+$$
+
+for some constant $k$ and all real numbers $t$.
+$k$ is also called *the degree of homogeneity.*
+
+**Definition: self similar** A stochastic process $(X_t)_{t\ge0}$ is called *self-similar* if there exists a real number $H>0$ such that for any $c>0$ the processes $(X_{ct})_{t\ge0}$ and $(c^HX_t)_{t\ge0}$ have the same finite dimensional distributions.
+
+Fact - fBm has homogeneous covariance function, and fBm is self similar.
+
+Fact - $\mathbb{E}[|B_t^H - B_s^H|^2]=|t-s|^{2H}\quad s,t\in\mathbb{R}$ , which implies stationary increments
+
+**Theorem: Kolmogorov-Chentsov Continuity Theorem.** Assume that for a stochastic process $\{X_t, t\ge0\}$ such that for $s,t,\in[0,T]$ and $T\ge0$,
+
+$$
+\mathbb{E}[|X_t - X_s|^p]\le|t-s|^{1+\beta},
+$$
+
+with positive constants $p,\beta,D$.
+Then there exists a continuous modification $\hat X$ of $X$, i.e.
+
+1.  $\hat X$ has **continuous paths**.
+2.  $P(X_t=\hat X_t)=1$ for $t\in[0,T]$
+
+Furthermore, the process $\hat X$ is $\kappa$-Holder continuous, i.e for any $0<\kappa<\frac{\beta}{p}$
+
+$$
+\sup_{0\le s<t\le T} \frac{|\hat X_t - \hat X_s|}{(t-s)^\kappa}<\infty
+$$
+
+This Theorem can be applied for fBm.
+This is useful because in the near future we may just look at fBm as continuous, implicitly choosing always the continuous modification of the process.
+
+Fact - when the Hurst parameter $H=\frac{1}{2}$ then we receive the standard Brownian motion: $B_t^{\frac{1}{2}}$, with covariance $\mathbb{E}[B_t^{\frac{1}{2}}B_s^{\frac{1}{2}}] = min(|s|,|t|)$ .
+
+Fact: If we define $R_H(n)$ where $s+h\le t, \quad t-s=nh$ as :
+
+$$
+R_H(n)=\mathbb{E}[(B_{t+h}-B_t)(B_{s+h}-B_s)]
+$$
+
+Then:
+
+1.  When $H\in(0,\frac{1}{2})$, $R_H(n)<0$ then the increments are negatively correlated and the process presents counter persistence. Furthermore: $\sum_{n=1}^\infty |R_H(n)|<\infty$
+2.  When $H\in(\frac{1}{2},1), R_H(n)>0$ then the increments are positively correlated and the process is persistent. Furthermore: $\sum_{n=1}^\infty R_H(n)=\infty$
+
+Fact: when the Hurst parameter $H\in(0,\frac{1}{2})\cup(\frac{1}{2}, 1)$, **the increments of the fBm on disjoint intervals are not independent.**
+
+Fact: fBm is not semimartingale.
