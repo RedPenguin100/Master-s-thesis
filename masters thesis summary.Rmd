@@ -104,6 +104,12 @@ The Gaussian process is characterized by mean and covariance kernel.
 So a Brownian motion is actually a centered Gaussian process, but not the only one.
 We will now see other forms of Gaussian processes.
 
+**Definition semimartingale** a real values process $X$ on the filtered probability space $(\Omega, \mathcal{F}, (\mathcal{F_t})_{t\ge0},P)$ is called asemimartingale if it can be decomposed as$$X_t = M_t + A_t$$
+
+where $M$is a local martingale and A is s Càdlàg adapted process(everywhere right continuous, has left limits everywhere. may contain jumps) of locally bounded variation.
+
+Semimartingale is a kind of merge between a martingale-like process and a non-martingale process.
+
 ### Elementary properties of fBm
 
 ***Definition: fraction Brownian motion (fBm)** A centered Gaussian process* $B^H=\{B_t^H,t\in\mathbb{R}\}$ is called a two-sided fractional Brownian motion (fBm) with Hurst parameter $H\in(0,1)$ if it has covariance function:
@@ -161,6 +167,188 @@ Then:
 1.  When $H\in(0,\frac{1}{2})$, $R_H(n)<0$ then the increments are negatively correlated and the process presents counter persistence. Furthermore: $\sum_{n=1}^\infty |R_H(n)|<\infty$
 2.  When $H\in(\frac{1}{2},1), R_H(n)>0$ then the increments are positively correlated and the process is persistent. Furthermore: $\sum_{n=1}^\infty R_H(n)=\infty$
 
-Fact: when the Hurst parameter $H\in(0,\frac{1}{2})\cup(\frac{1}{2}, 1)$, **the increments of the fBm on disjoint intervals are not independent.**
+Fact: when the Hurst parameter $H\in(0,\frac{1}{2})\cup(\frac{1}{2}, 1)$, **the increments of the fBm on disjoint intervals are not independent**, and also **the process is not a semimartingale.**
 
-Fact: fBm is not semimartingale.
+### Mandelbrot-Van Ness representation of fBm
+
+We create the two-sided Wiener process:
+
+$$
+W_t=\begin{cases}
+W_t^1,    \quad \; t\ge0\\
+W_{-t}^2, \quad t<0
+\end{cases}
+$$
+
+$W^1, W^2$ are independent on $[0,\infty)$
+
+Given a step function $$g(x)=\sum_{k=1}^{n}a_k\textbf{1}_{[s_k,t_k]}(x),$$
+
+define the integral:
+
+$$
+I(g)=\int_Rg(x)dW(x)=\sum_{k=1}^na_k(W_{t_k}-W_{s_k})
+$$
+
+Few properties: Can be extended from step function to functions in $L^2(\mathbb{R})$.
+This integral is also linear, its mean is zero, and it keeps isometry: $\mathbb{E}[I(f)I(g)]=\int_{\mathbb{R}}f(x)g(x)dx.$ Also, for $h_1,...,h_n\in L^2(\mathbb{R})$ the random variables $I(h_1),...,I(h_n)$ are jointly Gaussian distributed.
+
+Now suppose the the fBm $B_t^H$ can be represented in the following form:
+
+$$
+B_t^H=I(k_H(t)) = \int_{\mathbb{R}}k_H(t,x)dW_x
+$$
+
+Where $k_H(t)$ is a deterministic kernel.
+Because the mean of the integral is 0, if you show that the same covariance as the fBm is achieved you have proved the process is fBm.
+
+**Theorem:** the fBm above is achieved with
+
+$$
+B_t^H=\frac{1}{C^{(1)}(H)}\int_{\mathbb{R}}k_H(t,u)dW_u
+$$
+where:
+$$
+\frac{1}{C^{(1)}(H)} = (\int_{\mathbb{R}^+} ((1+s)^\kappa-s^\kappa)^2ds+\frac{1}{2H})^\frac{1}{2}
+$$
+and 
+$$k_H(t,u):=(t-u)^\kappa_+-(-u)^\kappa_+$$ with $\kappa = H-\frac{1}{2}$.
+
+### Fractional integrals and derivatives
+
+Let $a,b\in\mathbb{R},a<b,\alpha>0$ and $f\in L^1(a,b)$.
+The Riemann-Liouville left and right-sided integrals are defined on $(a,b)$ of order $\alpha$ by
+
+$$
+(I_{a^+}^\alpha f)(x):=\frac{1}{\Gamma(\alpha)}\int_a^xf(y)(x-y)^{\alpha-1}dy
+$$\
+and$$
+(I_{b^-}^\alpha f)(x):=\frac{1}{\Gamma(\alpha)}\int_x^b f(y)(y-x)^{\alpha-1}dy
+$$
+
+respectively.
+If a function $f$ inside the proper function space is an integral, the left and right sided derivatives are defined by:
+
+$$
+(D_{a^+}^\alpha f)(x)=\frac{1}{\Gamma(1-\alpha)} \left(\frac{f(x)}{(x-a)^\alpha}+\alpha\int_a^x\frac{f(x)-f(y)}{(x-y)^{\alpha+1}}dy\right)
+$$
+
+and
+
+$$
+(D_{b^-}^\alpha f)(x)=\frac{1}{\Gamma(1-\alpha)} \left( \frac{f(x)}{(b-x)^\alpha}+\alpha \int_x ^b\frac{f(x)-f(y)}{(x-y)^{\alpha+1}}dy \right)
+$$
+
+### Representation of fBm on an interval
+
+Fix a time interval $[0,T]$ and denote the set of step functions on $[0,T]$ by $\bf S$.
+Let ${B_t^H, t\in[0,T]}$ be the fBm with Hurst parameter $H\in(0,1)$, and let $\mathcal{H}$ be the closure of $\bf S$ with respect to the scalar product:
+
+$$
+\displaystyle < \textbf{1}_{[0,t]}, \textbf{1}_{[0,s]}>=R_H(t,s)
+$$
+
+**This is the big thing about the fractional Brownian motion.** This scalar product, and the integrals and derivatives that were previously defined lead to a long proof to an important identity which states that you can get from Brownian motion to fBm using certain kernel functions.
+The identity as described in the paper:
+
+$$
+\int_0^T\gamma(t)dB_t=\int_0^T(K^*_H\gamma)(t)dW_t
+$$
+
+This looks scary but this isn't really:
+
+$\gamma$ is just a member inside $\mathcal{H}$
+
+$B_t$ here denotes **fractional** Brownian motion
+
+$W_t$ denotes Brownian motion / Wiener process
+
+$K_H$ is an appropriate kernel function, from this function we derive the operator $K^*_H$ which is defined like this: $(K^*_H\gamma)(s)=\int_s^T\gamma(t) \left( \frac{\partial K_H}{\partial t}\right)(t,s)dt$
+
+### Simulation of fBm
+
+The author goes into detail on how to generate a time series that represents a fBm.
+
+## Summary of chapter 3 - Rough fractional stochastic volatility.
+
+The logarithm of realized variance behaves essentially as fractional Brownian motion with Hurst parameter $H=0.1$.
+This leads to the Rough Fractional Stochastic Volatility (RFSV) model, which is based on the Fractional Stochastic Volatility model.
+
+### Fractional volatility
+
+The FSV model:
+
+$$
+\frac{dS_t}{S_t}=\sigma_tdZ_t
+$$
+
+$$
+dlog(\sigma_t)=\nu dW_t^H+\alpha(m-log(\sigma_t))dt
+$$
+
+where $Z_t$ is standard Brownian motion and $W_t^H$ is fBm represented with:
+
+$$
+\displaystyle W_t^H=\int_0^t\frac{(t-s)^{H-\frac{1}{2}}}{\Gamma(H+\frac{1}{2})}dW_s,\quad \frac{1}{2}\le H<1
+$$
+
+and
+
+$$
+\mathbb{E}[dW_tdZ_t]=\rho dt
+$$
+
+The fBm has long memory, so the choice of $H\ge\frac{1}{2}$ captures that.
+
+### Scaling property and normality
+
+It is important to remember how observed volatility looks:
+
+$$
+\displaystyle
+m(q,\Delta)=\frac{1}{N}\sum_{k=1}^N |\log(\sigma_{k\Delta})-\log(\sigma_{(k-1)\Delta})|^q
+$$
+
+where $\{ \sigma_{k\Delta} \} _{k}$ is a volatility process on $[0,T],k\in \{ 0,[T/\Delta] \}, N=[T/\Delta]$ and $q \ge0$.
+
+$m(q,\Delta)$ can be viewed as the empirical counterpart of the following size:
+
+$$
+m(q,\Delta)"="\mathbb{E}[|\log(\sigma_\Delta)-\log(\sigma_0)|^q]
+$$
+
+Scaling property:
+
+$$
+\mathbb{E}[|\log(\sigma_\Delta-\log(\sigma_0)|^q] = C_q\Delta^{\zeta_q}
+$$
+
+You can plug many different q values to try to estimate $\zeta_q$ which will give you $H$.
+Testing against realized volatility of famous datasets we get results around $H=0.1$.
+Because the $H \ll\frac{1}{2}$ , the volatility is rough(the counter - persistence property that fBm has in that situation is the roughness)
+
+### The Ornstein-Uhlenbeck process
+
+The RFSV model uses the OU process, so it will be useful to know more about it.
+
+Given the Langevin ODE which describes particle movement in a fluid:
+
+$$
+\frac{dv(t)}{dt}=-\frac{f}{m}v(t)+\frac{F(t)}{m}
+$$
+
+where $m$ is particle mass, $f>0$ is the friction coefficient and $F(t)$ is the force on the particle by the impact of molecules in the fluid.
+The OU process may be defined as the strong solution to the ODE with Brownian noise, the according SDE will look like this(with parameter $\lambda$ and $\sigma$):
+
+$$
+\displaystyle X_t=\xi-\lambda\int_0^tX_sds+\sigma B_t,t\ge0,
+$$
+
+With random initial condition $\xi=\sigma\int_{-\infty}^0e^{\lambda u}dB_t$, the solution is given by
+
+$$
+Y_t=\sigma\int_{-\infty}^{t}e^{-\lambda (t-u)}dB_u,\quad t\ge0$$
+
+This solution is stationary.
+
+The idea is to use this OU SDE and solution and instead of using regular Brownian motion we will plug in the fBm.
