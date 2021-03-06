@@ -60,7 +60,7 @@ $\displaystyle d\sigma(t) = \mu_2\sigma(t)dt+\delta\sigma^{\beta}(t)dW_2(t)$
 
 and that is the end of chapter 1.
 
-## Summary of chapter 2
+## Summary of chapter 2 - fractional Brownian motion.
 
 Here it gets interesting.
 The idea is to replace the usual Brownian motion with a fractional Brownian motion(fBm) in a SDE model.
@@ -352,3 +352,74 @@ Y_t=\sigma\int_{-\infty}^{t}e^{-\lambda (t-u)}dB_u,\quad t\ge0$$
 This solution is stationary.
 
 The idea is to use this OU SDE and solution and instead of using regular Brownian motion we will plug in the fBm.
+So the author proves that When replacing the Brownian motion in $Y_t$ with $dB_t^H$ is will also be strictly stationary.
+
+The newly crafted solution will look like: $$Y_t^{H,\xi}:=e^{-\lambda t}(\xi+\sigma\int_0^te^{\lambda u}dB_u^H),\quad t\ge0$$
+
+### From the scaling property to the RFVS model
+
+We have observed two properties of realized log volatility:
+
+1.  The increment of log volatility is Gaussian distributed
+2.  Scaling property seems to be universal (dumbly summarizing: as we look more closely at fBm, we find more fBm, and not something more similar to something else, e.g. parabola is similar to a line when looking closely.)
+
+It might be a natural construction to do the following:
+
+$$\log(\sigma_{t+\Delta})-\log(\sigma_t)=\nu(B_{t+\Delta}^H-B_t^H)$$
+
+where $\sigma_t$ is our volatility and $B_t^H$ is our fBm with Hurst parameter $H$
+
+We may rewrite the equation as:
+
+$$
+\sigma_t=\sigma \exp(\nu B_t^H)
+$$
+
+where $\sigma$ is a positive constant.
+
+The problem is, that if we define our volatility like this, **it is not stationary**, this is because the fBm is not stationary.
+
+The author suggests the fractional Ornstein-Uhlenbeck mode: We use the stationary solution to the SDE:
+
+$$
+dX_t=\nu dB_t^H-\alpha(X_t-m)dt
+$$
+
+where $m\in\mathbb{Z},\alpha,\nu$ are positive constants.
+The solution to the SDE is:
+
+$$
+X_t=\nu\int_{-\infty}^te^{-\alpha(t-s)}dB_t^H+m
+$$
+
+That is, our RFSV finally gives the volatility:
+
+$$
+\Large \sigma_t=\exp{ \{X_t\} },\quad t\in[0,T]
+$$ Some facts:
+
+1.  Model is intended for $H<\frac{1}{2}$
+2.  For small $\alpha$, the rate of reversion is small, so we have a model more similar to the non-stationary one.
+3.  Given $[0,T]$, when $\alpha\ll \frac{1}{T}$ , the log volatility behaves locally as a fBm.
+
+For my sanity, here is the full RFSV model:
+
+$$
+dS_t=\mu_tdt+\sigma_tdB_t
+$$
+
+$$
+\sigma_t=\exp \{ X_t\},t\in[0,T]
+$$
+
+$$
+dX_t=\nu W_t^H-\alpha(X_t-m)dt
+$$
+
+## Summary of chapter 4 - option pricing
+
+Now that we have this model, we want to extend it for option pricing.
+
+There is the Bergomi model, which resembles RFSV pricing, and the option pricing model is a possible extension to that model - the author calls it Rough Bergomi (rBergomi).
+
+### The rBergomi model: the construction
