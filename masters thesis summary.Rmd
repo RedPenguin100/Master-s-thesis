@@ -206,13 +206,9 @@ Because the mean of the integral is 0, if you show that the same covariance as t
 
 $$
 B_t^H=\frac{1}{C^{(1)}(H)}\int_{\mathbb{R}}k_H(t,u)dW_u
-$$
-where:
-$$
+$$ where: $$
 \frac{1}{C^{(1)}(H)} = (\int_{\mathbb{R}^+} ((1+s)^\kappa-s^\kappa)^2ds+\frac{1}{2H})^\frac{1}{2}
-$$
-and 
-$$k_H(t,u):=(t-u)^\kappa_+-(-u)^\kappa_+$$ with $\kappa = H-\frac{1}{2}$.
+$$ and $$k_H(t,u):=(t-u)^\kappa_+-(-u)^\kappa_+$$ with $\kappa = H-\frac{1}{2}$.
 
 ### Fractional integrals and derivatives
 
@@ -423,3 +419,157 @@ Now that we have this model, we want to extend it for option pricing.
 There is the Bergomi model, which resembles RFSV pricing, and the option pricing model is a possible extension to that model - the author calls it Rough Bergomi (rBergomi).
 
 ### The rBergomi model: the construction
+
+We start with the stock model:
+
+$$
+\frac{dS_t}{S_t} = \mu_tdt + \sqrt{v_t}dB_t
+$$
+
+where the volatility process is $\sqrt{v_t}$ is driven by fBm.
+
+Given the **instantaneous variance** process $v_t$ ,the **integrated variance** is the quadratic variation of $\log(S_t)$ , and is given by: $\int_t^Tv_sds$
+
+Realized variance is a usual estimation of integrated variance, so this is how we can connect the real life data with our model.
+
+The **forward variance curve** is given by:
+
+$$
+\phi_t(s)=\mathbb{E}[v_s|\mathcal{F}_t], \quad s\ge t
+$$
+
+We can rewrite the model like this:
+
+$$
+\frac{dS_t}{S_t}=\sqrt{\phi_t(t)}dZ_t,
+$$
+
+$$
+d\phi_t(s)=\alpha \rho(t,s,\phi_t)dW_t
+$$
+
+Where $Z_t,W_t$ are two Brownian motions that are connected.
+
+**Side note:** The author mentioned that Bergomi also showed a small noise expansion for the smile:
+
+$$
+\sigma_{BS}(k,T)=\sigma_T^* + \alpha\sqrt{\frac{V}{T}}\frac{1}{2V^2}F^{x\phi}k+O(\alpha^2)
+$$
+
+Where
+
+-   log-strike $k=log(K/S_t)$
+
+-   $V=\int_0^T\phi_0(u)du$ is the total variance to expiration $T$
+
+-   $\phi_T^*$ is ATM volatility.
+
+-   auto-covariance functional $$F^{x\phi}=\int_0^Tdt \int_t^Tds \frac{\mathbb{E[dx_td\phi_t(s)]}}{dt}$$
+
+    -   where $x_t=\log(\frac{S_t}{S_0})$
+
+**This is useful for when we want to derive the BS volatility from the actual model**.
+
+Now, after we have a vague idea of what is the forward variance, we can use "n-factor Bergomi model" to yield the following equality:
+
+$$
+\phi_t(s)=\phi_0(s)\mathcal{E}\left(\sum_{i=1}^n \delta_i\int_0^t e^{-\zeta_i(s-u)}dW_u^{(i)} \right)
+$$
+
+Where:
+
+-   The stochastic exponential, $\mathcal{E}$ is : $\mathcal{E}(X)_t = \exp(X_t-X_0-\frac{1}{2}[X]_t)$
+
+    -   Where $[X]_t$ denotes the quadratic variation of $X_t$.
+
+**Interesting property: when** $X_t$ **is a local martingale, so is** $\mathcal{E}(X_t)$**, while** $\exp(X_t)$ **usually isn't.**
+
+The author states that the n-factor Bergomi representation for the forward variance curve is determined by n OU-processes, when $n=1$ the model can be written as:
+
+$$
+\phi_t(s)=\phi_0(s)\exp(\delta e^{-\zeta(s-t)}Y_t - \frac{1}{2}\delta ^ 2 e ^ {-2\zeta (s-t)}\mathbb{E}[Y_t^2])
+$$
+
+where $Y_t$ is a scalar OU-process.
+
+**We got a result which is relatively hard to calculate. If we will restructure the model a little, we may get results that are consistent with experiments and more simplified.**
+
+Attempting to do so, we may look at the ATM volatility skew:
+
+$$
+\gamma(\tau):= |\frac{\partial}{\partial k} \sigma_{BS}(k,\tau)|_{k=0}
+$$
+
+For the Bergomi model it has the following behavior:
+
+$$
+\gamma(\tau)\sim\sum_i \frac{\delta_i}{\zeta_i \tau } \{1-\frac{1-e^{-\zeta_i \tau}}{\zeta_i \tau}\}
+$$
+
+where $\tau=T-t$, time to expiration.
+
+It is **empirically observed** that the term structure of volatility skew behaves essentially as: $\gamma(\tau) \sim \tau^{-\beta}$ for some $\beta$.
+
+**So we change the exponential kernel to the following model:**
+
+$$
+\phi_t(u)=\phi_0(u)\mathcal{E}\left(\delta\int_0^t \frac{dW_s}{(u-s)^\kappa} \right)
+$$
+
+and we still have that $\phi_t(u)$ is a local martingale.
+
+Fixing a constant initial value $\phi_0(u) \equiv\sigma_0$, and taking the square root of the forward variance, the instantaneous stochastic volatility process is:
+
+$$
+\sigma_t=\sqrt{\phi_t(t)} = \sigma_0 \sqrt{\mathcal{E}\left(\delta \int_0^t \frac{dW_s}{(t-s)^\kappa} \right)} = \sigma_0\exp\{\frac{\delta}{2}N_t - \frac{\delta^2}{4}\mathbb{E}[N_t^2]\} = \sigma_0 \sqrt{\mathcal{E}_W(\delta N_t)}
+$$
+
+where $N_t=\int_0^t \frac{dW_s}{(t-s)^\kappa}$ is a Volterra fBm with Hurst parameter $H=\frac{1}{2} - \kappa$, and is also holder continuous of order $H-\epsilon$ .
+
+The wick exponential is given by:
+
+$$
+\mathcal{E}_W(\Lambda)= \exp \left (\Lambda-\frac{1}{2}\mathbb{E}[|\Lambda|]^2 \right)
+$$
+
+If we revisit the previous equation regarding the volatility representation, we get a very very similar model to the RFSV from the previous chapter.
+This is the rBergomi model, and the author suggests we may regard this model as an extension to the usual Bergomi model.
+It is useful to express the model precisely like this and not from the previous chapter so we may perform the change of measure easier, which is present in the next chapter.
+
+### Change of measure
+
+If we recall the scaling property:
+
+$$
+\log \sigma_t - \log \sigma_s = \zeta(W_t^H-W_s^H), 0<s<t<\infty
+$$
+
+We may also recall he Mandelbrot-Van Ness representation of fBm:
+
+$$
+W_t^H=\gamma_H \{ \int_{-\infty}^t \frac{dW_s^{\mathbb{P}}}{(t-s)^\kappa}\ - \int_{-\infty}^0\frac{dW_s^{\mathbb{P}}}{(-s)^\kappa}\}
+$$
+
+where
+
+-   $\kappa=\frac{1}{2} -H$
+
+-   The parameter: $\gamma_H=\sqrt{(2H\Gamma(3/2-H))/ (\Gamma(H+1/2)\Gamma(2-2H))}$ is determined from the auto-covariance of fBm.
+
+So if we now define:
+
+$$
+C_t(u):=\int_t^u\frac{1}{(u-s)^\kappa}dW_s^\mathbb{P}
+$$
+
+And also:
+
+$$
+N_t(u):=\int_{-\infty}^t[\frac{1}{(u-s)^{\kappa}} - \frac{1}{(t-s)^\kappa}]dW_s^{\mathbb{P}}
+$$
+
+We can plug both the Mandelbrot-Van Ness, and the 2 definitions to the scaling property equation to get:
+
+$$
+\log v_u - \log v_t = 2\zeta \gamma_H\{C_t(u) + N_t(u)\}
+$$
