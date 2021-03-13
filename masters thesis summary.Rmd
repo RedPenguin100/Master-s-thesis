@@ -574,3 +574,124 @@ We can plug both the Mandelbrot-Van Ness, and the 2 definitions to the scaling p
 $$
 \log v_u - \log v_t = 2\zeta \gamma_H\{C_t(u) + N_t(u)\}
 $$
+
+Few notes:
+
+-   $N_t(u)$ is $\mathcal{F}_t$ - measurable
+
+-   $C_t(u)$ is independent of $\mathcal{F}_t$, and is a centered Gaussian process with variance ${(u-t)^{2H}}/(2H)$
+
+We will define $Z_t^{\mathbb{P}}$ which will help us swap measures from the **physical measure** $\mathbb{P}$ to the **risk neutral measure** $\mathbb{Q}$, but more on that later.
+
+$$Z_t^{\mathbb{P}}:=\sqrt{2H}\int_t^u \frac{dW_s^{\mathbb{P}}}{(u-s)^\kappa}$$
+
+Then we write may write $2\zeta \gamma_H C_t(u) = \delta Z_t^{\mathbb{P}}(u)$ where $\delta = 2\zeta\gamma_H / \sqrt{2H}$.
+The forecast of the instantaneous volatility at time $u$ given information up to time $t$ is given:
+
+$$\mathbb{E}^{\mathbb{P}}[v_u|\mathcal{F}_t] = v_t \exp \{2\zeta \gamma_H C_t(u) + \frac{1}{2}\delta ^ 2 \mathbb{E}[|Z_t^\mathbb{P(u)}|^2] \}$$ Using Wick's exponential, it follows immediately that:
+
+$$
+v_u =v_t\exp \{\delta Z_t^{\mathbb{P}}(u) + 2\zeta \gamma_H N_t(u) \} = \mathbb{E}^{\mathbb{P}}[v_u|\mathcal{F}_t] \mathcal{E}_W(\delta Z_t^{\mathbb{P}}), \quad u > t
+$$
+
+We see that $\{ v_t\}_t$ is not Markovian because $N_t(u)$ depends on the full history of $W_t^{\mathbb{P}}$ up to time $t$ .
+
+Also, the conditional distribution of $v_u$ depends on $\mathcal{F}_t$ only through $\mathbb{E}^{\mathbb{P}}[v_u|\mathcal{F}_t]$.
+
+Finally, the model will look like this:
+
+$$
+\frac{dS_u}{S_u} = \mu_udu+\sqrt{v_u}dB_u^{\mathbb{P}} \\
+v_u = v_t \exp \{ \delta Z_t^{\mathbb{P}} (u) + 2 \zeta \gamma_H N_t(u)\}
+$$
+
+Where $B_u^{\mathbb{P}}, W_u^{\mathbb{P}}$ are two standard Brownian motion with constant correlation $\rho$.
+
+We are now able to change measures easier, to the **risk neutral measure** $\mathbb{Q}$.
+The risk neutral measure is a probability measure that helps quantify the overall market's risk aversness to a particular asset.
+People are naturally risk avers, and even though two stocks might have the same expectation, people would tend to want the one with the lower volatility.
+By contrast, the **physical measure**, $\mathbb{Q}$, which is the one used in all of this summary until now, we didn't care about volatility for stock pricing and a stock with expectation of 5\$ would equal 5\$ with 0 volatility or a very high volatility.
+
+As it turns out, if we use the physical measure and we assume that the market is **arbitrage free** ("no free meals"), then we can be certain that the risk neutral measure exists as well.
+Also, it is possible to transform a stock price from the risk neutral to the physical measure, and these measures are equivalent.
+That is:
+
+Probability $\mathbb{Q}$ is equivalent to the physical probability measure $\mathbb{P}$ in the sense that for all events $A\in\mathcal{F}, \mathbb{P}\sim\mathbb{Q}$, i.e. $\forall A\in \mathcal{F}$:
+
+$$
+\mathbb{P}(A)=0 \iff \mathbb{Q}(A)=0
+$$
+
+To transform from one measure to another, we may **change measures**, and we want the stock price $S_t$ to be a martingale still after the change of measures.
+To achieve that we can use the Girsanov change of measure: $$dB_u^{\mathbb{Q}}=dB_u^{\mathbb{P}} + \frac{\mu_u}{\sqrt{v_u}}du, \quad t\le u\le T$$
+
+This gives:
+
+$$
+\frac{dS_u}{S_u} = \sqrt{v_u} dB_u^{\mathbb{Q}}, \quad t \le u \le T
+$$
+
+Now $S_u$ is a martingale w.r.t $\mathbb{Q}$ on $u \in [t,T].$ Because $W^{\mathbb{P}}$, $B^\mathbb{P}$ are correlated, there exists $B^{*\mathbb{P}}$ independent from $B^{\mathbb{P}}$ s.t.
+
+$$
+W^{\mathbb{P}} = \rho B^\mathbb{P} + \rho^* B^{*\mathbb{P}}, \quad \rho^2 + \rho ^ {*2} = 1
+$$
+
+A **general change of measure** $dB^{*\mathbb{P}}$ is the given by: $$dB^{* \mathbb{Q}} = dB^{*\mathbb{P}} + \eta_u du$$
+
+where $\eta_u = \eta(u,\omega), u\in[t,T]$ is a suitable adapted process, and is called **the market price of volatility risk**.
+All in all we get:
+
+$$
+dW_u^\mathbb{P} = dW_u ^ \mathbb{Q} - \{ \frac{\rho \mu_u}{\sqrt{v_u}} + \rho^* \eta_u \} du
+$$
+
+We can write this more compactly:
+
+$$
+dW_u^\mathbb{P} = dW_u ^ \mathbb{Q} +\lambda_sds
+$$
+
+Plugging in back to the expression of $v_u$ we can see that $v_u$ is no longer lognormal distributed:
+
+$$
+ v_u = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] 
+\mathcal{E}(\delta Z_t^\mathbb{P}(u)) 
+\\
+
+= \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] 
+\exp \{ \delta \sqrt{2H} \times \int_t^u \frac{1}{(u-t)^\kappa}dW_s^\mathbb{P} - \frac{\delta^2}{2} (u-t)^{2H}\} 
+\\
+
+= \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t^\mathbb{Q}(u))
+\times \exp{\delta \sqrt{2H} \int _t ^ u \frac{\lambda_s}{(u-s)^\kappa}ds}
+$$
+
+### The rBergomi model
+
+Well, after all of this introduction, we will now introduce the final model.
+
+Consider the change of measure:\
+$$dW_s^\mathbb{P} = dW_s^\mathbb{Q} + \lambda_s ds $$
+
+For simplicity, $\lambda_t=\lambda(t)$ assumed to be deterministic in $t$.
+So we will have:
+
+$$v_u = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t ^ \mathbb{Q}(u)) \times \exp \{\delta \sqrt{2H} \int_t^u \frac{\lambda(s)}{(u-s)^\kappa} ds \} \\ =\phi_t(u) \mathcal{E}(\delta Z_t^\mathbb{Q}(u))$$ (I assumed they have a typo in the thesis)
+
+where $\phi_t(u)=\mathbb{E^Q}[v_u|\mathcal{F}_t]$.
+Hence:
+
+$$
+\phi_t(u)=\mathbb{E^P}[v_u|\mathcal{F}_t] \exp \{\delta \sqrt{2H} \int _u ^ t \frac{\lambda (s)}{(u-s)^\kappa} ds\}
+$$
+
+Since the risk neutral conditional probability is dependent on the full history of the physical Brownian motion, the model is a non-Markovian generalization of the original suggested model for the forward variance.
+
+-   From the way we constructed the mode, it is expected that the ATM implied volatility skew generated from it would be more realistic.
+
+-   The forward variance $\phi_t(u)$ given at the current time $t$ is independent of $t$, and only depends on the parameters $H,\delta,\rho$.
+
+### Simulation of the rBergomi model
+
+The author suggests an algorithm to simulate the rBergomi model, and provides some R code at the end.
