@@ -39,3 +39,5 @@ vignettes/*.pdf
 .Renviron
 
 masters-thesis-summary.pdf
+
+*.pdf
