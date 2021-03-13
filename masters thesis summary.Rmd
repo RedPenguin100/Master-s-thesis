@@ -600,11 +600,14 @@ Also, the conditional distribution of $v_u$ depends on $\mathcal{F}_t$ only thro
 
 Finally, the model will look like this:
 
-$$
-\frac{dS_u}{S_u} = \mu_udu+\sqrt{v_u}dB_u^{\mathbb{P}} \\
-v_u = v_t \exp \{ \delta Z_t^{\mathbb{P}} (u) + 2 \zeta \gamma_H N_t(u)\}
-$$
-
+```{=latex}
+\begin{equation}
+\begin{split}
+\frac{dS_u}{S_u} & = \mu_udu+\sqrt{v_u}dB_u^{\mathbb{P}} \\
+v_u & = v_t \exp \{ \delta Z_t^{\mathbb{P}} (u) + 2 \zeta \gamma_H N_t(u)\}
+\end{split}
+\end{equation}
+```
 Where $B_u^{\mathbb{P}}, W_u^{\mathbb{P}}$ are two standard Brownian motion with constant correlation $\rho$.
 
 We are now able to change measures easier, to the **risk neutral measure** $\mathbb{Q}$.
@@ -654,20 +657,15 @@ $$
 
 Plugging in back to the expression of $v_u$ we can see that $v_u$ is no longer lognormal distributed:
 
-$$
- v_u = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] 
-\mathcal{E}(\delta Z_t^\mathbb{P}(u)) 
-\\
+\begin{equation}
+\begin{split}
+ v_u & = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t^\mathbb{P}(u)) \\
+ & = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \exp \{ \delta \sqrt{2H} \times \int_t^u \frac{1}{(u-t)^\kappa}dW_s^\mathbb{P} - \frac{\delta^2}{2} (u-t)^{2H}\} \\
+ & = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t^\mathbb{Q}(u)) \times \exp{\delta \sqrt{2H} \int _t ^ u \frac{\lambda_s}{(u-s)^\kappa}ds}
+\end{split}
+\end{equation}
 
-= \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] 
-\exp \{ \delta \sqrt{2H} \times \int_t^u \frac{1}{(u-t)^\kappa}dW_s^\mathbb{P} - \frac{\delta^2}{2} (u-t)^{2H}\} 
-\\
-
-= \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t^\mathbb{Q}(u))
-\times \exp{\delta \sqrt{2H} \int _t ^ u \frac{\lambda_s}{(u-s)^\kappa}ds}
-$$
-
-### The rBergomi model
+The rBergomi model
 
 Well, after all of this introduction, we will now introduce the final model.
 
@@ -677,8 +675,13 @@ $$dW_s^\mathbb{P} = dW_s^\mathbb{Q} + \lambda_s ds $$
 For simplicity, $\lambda_t=\lambda(t)$ assumed to be deterministic in $t$.
 So we will have:
 
-$$v_u = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t ^ \mathbb{Q}(u)) \times \exp \{\delta \sqrt{2H} \int_t^u \frac{\lambda(s)}{(u-s)^\kappa} ds \} \\ =\phi_t(u) \mathcal{E}(\delta Z_t^\mathbb{Q}(u))$$ (I assumed they have a typo in the thesis)
+\begin{equation}
+\begin{split}
+v_u & = \mathbb{E}^\mathbb{P}[v_u | \mathcal{F}_t] \mathcal{E}(\delta Z_t ^ \mathbb{Q}(u)) \times \exp \{\delta \sqrt{2H} \int_t^u \frac{\lambda(s)}{(u-s)^\kappa} ds \} \\ & =\phi_t(u) \mathcal{E}(\delta Z_t^\mathbb{Q}(u))
+\end{split}
+\end{equation}
 
+(I assumed they have a typo in the original document)
 where $\phi_t(u)=\mathbb{E^Q}[v_u|\mathcal{F}_t]$.
 Hence:
 
