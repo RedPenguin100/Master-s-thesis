@@ -1,0 +1,47 @@
+---
+title: "General progress"
+author: "Michaelkovaliov"
+date: "13 3 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# General progress
+
+## Introduction
+
+In this file I'll try to keep some useful information and tasks for the future, maybe this isn't the best way but I'll start from here.
+
+## Topics to learn
+
+I really need to review the following topics:
+
+-   Forward variance curve
+
+-   Option modeling
+
+-   The Bergomi model
+
+-   Risk-neutral vs physical measure
+
+## Good Sources
+
+Here I'll write sources that are worth looking up, so everything is in once place
+
+Important note: To read Springer articles, you may do the following:
+
+1.  Notice where the paper was published
+2.  Go to "דעתא" in TAU university system
+3.  Write the journal
+4.  If you have access to it, just go to the correct year and search for the paper
+5.  **SAVE THE PDF**
+
+-   Bergomi papers: <https://www.lorenzobergomi.com/papers>
+
+-   Many papers regarding rough volatility: <https://sites.google.com/site/roughvol/home/risks-1>
+
+-   CREATES: center for research of econometrics <https://econ.au.dk/research/researchcentres/creates/> - the PhD works there might have a lot of utility.
+
