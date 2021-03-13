@@ -39,9 +39,16 @@ Important note: To read Springer articles, you may do the following:
 4.  If you have access to it, just go to the correct year and search for the paper
 5.  **SAVE THE PDF**
 
--   Bergomi papers: <https://www.lorenzobergomi.com/papers>
+### Sites
 
--   Many papers regarding rough volatility: <https://sites.google.com/site/roughvol/home/risks-1>
+1.  Bergomi papers: <https://www.lorenzobergomi.com/papers>
+2.  Many papers regarding rough volatility: <https://sites.google.com/site/roughvol/home/risks-1>
+3.  CREATES: center for research of econometrics <https://econ.au.dk/research/researchcentres/creates/> - the PhD works there might have a lot of utility.
 
--   CREATES: center for research of econometrics <https://econ.au.dk/research/researchcentres/creates/> - the PhD works there might have a lot of utility.
+### Books
 
+-   **Reference/Introductory Time series with R** - whenever I want to improve my R skills or my time series skills, a very very good book.
+
+### Papers
+
+-   **Reference/Introduction to rough volatility thesis** - A thesis that describes the basics of fractional Brownian motion, rough volatility model and the rBergomi model.
