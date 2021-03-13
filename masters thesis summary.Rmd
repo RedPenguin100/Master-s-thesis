@@ -465,7 +465,7 @@ Where
 
 -   $\phi_T^*$ is ATM volatility.
 
--   auto-covariance functional $$F^{x\phi}=\int_0^Tdt \int_t^Tds \frac{\mathbb{E[dx_td\phi_t(s)]}}{dt}$$
+-   auto-covariance functional $$F^{x\phi}=\int_0^Tdt \int_t^Tds \frac{\mathbb{E}[dx_t d\phi_t(s)]}{dt}$$
 
     -   where $x_t=\log(\frac{S_t}{S_0})$
 
