@@ -416,7 +416,8 @@ $$
 
 Now that we have this model, we want to extend it for option pricing.
 
-There is the Bergomi model, which resembles RFSV pricing, and the option pricing model is a possible extension to that model - the author calls it Rough Bergomi (rBergomi).
+In this section we rely on Bergomi model, we extend it to rough Bergomi, that is - we use the facts we learned about rough volatility to extend the rBergomi model, and then we change it's measure to risk neutral.
+I assume this process makes it much easier for option pricing, but I need to look it up.
 
 ### The rBergomi model: the construction
 
