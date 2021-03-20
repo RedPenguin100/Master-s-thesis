@@ -1,0 +1,123 @@
+---
+title: "Bergomi theory"
+author: "Michael Kovaliov"
+date: "13 3 2021"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bergomi 1
+
+## Introduction
+
+### Useful terms
+
+**P&L** - Profit and Loss.
+
+**raison d'etre -** reason for being.
+
+**ab initio -** from the beginning.
+
+**Exotic options**
+
+-   Napoleons - idea: At the strike price, you get a coupon, but you pay for the worst return of an index at that time period. So if the volatility was low, you will get most of the coupon, if volatility was high - you have a chance of getting "floored" to the set floor price.
+
+-   Cliquet or ratchet option
+
+-   Reverse cliquet
+
+**Spot price -** The **current price** in the marketplace at which a given asset - such as a security, commodity, or currency - can be bought or sold for **immediate delivery**. Stocks always trade at spot, futures trade at **future price**, and are usually based on the **spot price** of the underlying derivative.
+
+### Story
+
+**Smile models -** a volatility model for option trading. When it is plotted from strike price and implied volatility we get a graph that looks similar to a smile. The volatility of an option is also sometimes called a volatility smile, or just smile.
+
+![](C:/Users/micha/AppData/Local/RStudio/tmp/paste-2FB50381.png)
+
+In Black-Scholes model:
+
+-   Implied volatilities for different strikes are equal
+
+-   They are frozen (constant?)
+
+**Important note** - Not always the volatility has a smile. In practice, stock markets have usually **downward slope** and currency markets usually have **valley-shape**. When the implied volatility plotted against the strike prices gives the slop it is sometimes called **the volatility skew**. For option markets, **we get the volatility smile**.
+
+Local volatility models have been around, but they are directly based on empirical market smile and are not backed up by theory, and predicts poorly the future dynamics.
+
+What we want:
+
+-   Calibrate today's market smile
+
+-   Specify its future dynamics
+
+One approach to do this was tried using *ab initio* joint process for implied volatilities and the spot.
+
+In this article, the author gives a few examples for models that can do better.
+
+## Pricing and hedging
+
+### Useful terms
+
+**Delta strategy** - If an asset has a derivative, like an option, the underlying
+
+**Repurchase agreement / Repo / RP / sales and repurchase agreement -** short term borrowing.
+
+**Residual risk = (Inherent risk) - (Things to minimize risk / risk control)**
+
+**Margin -** The money borrowed from a brokerage firm to purchase an investment. It is the difference between the total value of securities held in an investor's account and the loan amount from the broker. For example: If I want to buy 10K \$ worth of stocks, but I have only 6K \$, the broker may lend me 4K \$ to buy those stocks. If the **initial margin** requirement was at 60%, then 6K is exactly the margin.
+
+### Story
+
+The problem with Delta strategy, is that it not only minimizes risk, it makes it vanish, which is obviously ridiculous.
+
+For a European option
+
+$$
+P\&L = -e^{-r(T-t)}f(S_T) + \int_t^T e ^{-r(\tau-t)}\Delta(\tau,S,...)(dS_\tau-(r-q)Sd\tau)
+$$
+
+-   $f$ - the payoff function
+
+-   $r$ - the interest rate
+
+-   $T$ - the maturity
+
+-   $q$ - repo cost and dividend yield
+
+-   $\Delta$ is a function of $S$ - the (spot) price, $t$, and may depend upon other variables as well.
+
+$\Delta$ is determined by requiring that it minimizes the **variance** of the profit and loss.
+
+Price of the option is denoted as: $E[P\&L]$.
+
+Important note: the models do not adjust the price for the residual risk.
+
+Reasons:
+
+-   In practice, the option will be added to a portfolio. If the price would depend on the residual risk, it would also depend on the marginal variation in the risk upon adding an extra option to our book / portfolio, which is something we would like to avoid
+
+-   For the sake of simplicity, we want the value of the portfolio to be the sum of all the assets in the portfolio, which might not be like this if it depends upon the residual risk.
+
+### Stochastic volatility - the Heston model.
+
+In the Heston model, the historical dynamics for the spot process (underlying asset):
+
+```{=latex}
+\begin{equation}
+\begin{split}
+dS &= \mu S dt + \sqrt{V} S dZ_t \\
+dV &= -k(V-V_0)dt + \sigma \sqrt{V}dW_t
+\end{split}
+\end{equation}
+```
+where $W,Z$ are Brownian motions with correlation $\rho$.
+
+Let $m_\Delta(t,S,V)$ be the expectation, and $v_\Delta(t,S,V)$ the variance of the hedger's final P&L with the position. We hint that the expectation and the variance depend upon the yet unknown $\Delta$ function.
+
+In the Hamilton-Jacobi-Bellman(HJB) stochastic control formalism one derives a PDE for the "values function" J.

@@ -19,6 +19,8 @@ In this file I'll try to keep some useful information and tasks for the future, 
 
 I really need to review the following topics:
 
+Came up from thesis:
+
 -   Forward variance curve
 
 -   Option modeling
