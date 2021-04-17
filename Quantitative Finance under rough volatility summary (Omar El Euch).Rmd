@@ -1,0 +1,12 @@
+---
+title: "Omar Phd summary"
+author: "Michael Kovaliov"
+date: "13 3 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction

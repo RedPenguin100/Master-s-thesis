@@ -1,0 +1,151 @@
+---
+title: "Bergomi book summary"
+author: "Michael Kovaliov"
+date: "20 3 2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Chapter 1 - Introduction
+
+-   Black and Scholes is the most widely used model for estimating derivatives, even though it is not accurate and has unrealistic assumptions
+
+-   The dynamics of real securities is too hard to consider this model "wrong", so it might not be more inaccurate than other models with slightly better assumptions.
+
+-   While the **model** of B&S is not used, its pricing method is.
+
+## 1.1 Usable model - B&S
+
+Let $S_t$ a geometrically distributed stock, and we have a short position on its option - a European option of maturity $T$ whose payoff at $t=T$ is $f(S_t)$, where $S$ is the underlying.
+
+Lets say the price of the option should be: $P(t,S)$.
+
+-   We know that $P(T,S)=f(S),\quad \forall S$ , because this is the payoff.
+
+Now (it took me along time to understand this properly), assuming $\delta t$ is a small increment in time and $\delta S$ is the change in $S$ during that time, this is what happens in time $t+\delta t$:
+
+-   At time $t$, we **sell** the option, making **profit** $P(t,S)$
+
+-   At time $t+\delta t$, we **buy back** the option, **paying** for it $P(t+\delta t, S+\delta S)$
+
+-   For that time in between, $\delta t$, we have **earned** risk-free interest on the money we had lying in the bank, because why not(arbitrage is why not!)
+
+Now we try to hedge the position, with seemingly unrelated purchases:
+
+-   At time $t$, we bought $\Delta$ stocks (**unknown yet, still a parameter)**, Raising the value of the portfolio by $\Delta\delta S$
+
+-   But there are no free meals: to finance that we need to take a loan that costs us: $-rS\delta t$
+
+-   We might have made money from dividends or other stuff (repo rate): $qS\delta t$
+
+All in all, our Portfolio consists of the following profit and loss at time $t + \delta t$:
+
+$$
+P\&L = -[P(t+\delta t,S+\delta S)-P(t,S)]+rP(t,S)\delta t+\Delta(\delta S - rS\delta t + q S \delta t)
+$$
+
+The author suggest we take $\Delta = \frac{dP}{dS}$ to cancel the first order term in $\delta S$.
+
+It is a fact that variance of returns scales linearly in time: $<\delta S^2>$ is of order $\delta t$ and $\delta S$is of order $\sqrt{\delta t}$ . This may also be known without Brownian motion, because the returns have no **serial correlation** (auto correlation).
+
+**THE NEXT THING TOOK ME HOURS TO UNDERSTAND**
+
+From the previous equation of $P\&L$, we will derive a new equation. But it is important to first notice something, using multidimensional Taylor expansion:
+
+$$
+P(t+\delta t, S+ \delta S) = P(t,S) + \frac{\partial P}{\partial t} \delta t + 
+\frac{\partial P}{\partial S} \delta S + \frac{1}{2}\frac{\partial^2P}{\partial t^2} {\delta t}^2 + \frac{\partial^2P}{\partial t \partial S} \delta t  \delta S+ \frac{1}{2}\frac{\partial^2P}{\partial S^2} {\delta S}^2
+$$
+
+Few notes based on practice:
+
+-   The terms including 3rd derivatives and higher are negligible so we don't include them
+
+-   The terms with $\delta t \delta S$, $\delta t^2$ are also negligible, and may be omitted
+
+We can then get the equality:
+
+$$
+P(t+\delta t, S+\delta S)-P(t,S) - \frac{\partial P}{\partial S}\delta S = \frac{\partial P}{\partial t} \delta t +\frac{1}{2} \frac{\partial^2P}{\partial S^2}\delta S^2
+$$
+
+Collecting terms with similar deltas we get(1.5):
+
+$$
+P\&L=-\left(\frac{dP}{dt} -rP + (r-q)S \frac{dP}{dS}\right)\delta t - \frac{1}{2} S^2 \frac{d^2S}{\partial S^2}  \left( \frac{\delta S}{S}\right)^2
+$$
+
+-   The first portion is called **theta portion** - it is deterministic. Sometimes theta is used to denote $\frac{dP}{dt}$ only.
+
+-   The second piece is random and quadratic in $\delta S$. $\frac{d^2P}{dS^2}$ is called "gamma". We might work with "dollar gamma" - $S^2 \frac{d^2P}{dS^2}$
+
+We may denote:
+
+$$
+P\&L = -A(t,S)\delta t - B(t,S)\left(\frac{\delta S}{S}\right)^2
+$$
+
+-   If $A\ge0,B\ge0$ then we lose money regardless of $\delta S$. This means $P$ cannot be used for risk-managing our portfolio, and the initial price $P(0,S_0)$ was too low.
+
+-   If $A\le0,B\le0$ We made free money, regardless of $\delta S$, the movement of the stock. $P$ cannot be used for risk management and we charged too much money.
+
+-   Thus, the model is only usable if $A,B$ have different signs.
+
+Let us call $\hat{\sigma }$ the **(lognormal) historical volatility of** $S$ (brackets are average in this context): $$\left < \left( \frac{\delta S}{S}\right)^2 \right > = \hat{\sigma} ^ 2\delta t$$
+
+If we require that we do not make or lose money on average, it means that:
+
+$$
+A(t,S) = -\hat{\sigma}^2 B(t,S)
+$$
+
+Replacing $A,B$ with their expression yields the following equation(B&S equation):
+
+$$
+\frac{dP_{\hat{\sigma}}}{dt} - rP_{\hat{\sigma}} + (r-q)S \frac{dP_{\hat{\sigma}}}{dS} = - \frac{\hat{\sigma}^2}{2}S^2 \frac{dP^2_{\hat{\sigma}}}{dS^2}
+$$
+
+Taking the $P\&L$ and plugging in this equality to it:
+
+$$
+P\&L = -\frac{S^2}{2} \frac{d^2P_{\hat{\sigma}}}{dS^2} \left(\frac{\delta S^2}{S^2} - \hat{\sigma}^2 \delta t \right)
+$$
+
+We have a condition on the realized variance of the process $S$ that determines if the portfolio will make money or lose money. In the absence of market volatility for $S$, then $\hat{\sigma}$ is our best guess of future realized volatility.
+
+Basic accounting criterion: $P\&L$ should vanish when: $\displaystyle \frac{\delta S^2}{S^2} = \hat{\sigma}^2 \delta t$
+
+**The break-even level does not depend on the payoff of the option.**
+
+**A model not conforming to these criteria is unsuitable for trading purposes a suitable model is also called a market model.**
+
+After we constructed our nice model, we may plug it into the SDE:
+
+$$
+dS_t=(r-q)S_tdt +\hat{\sigma} S dW_t
+$$
+
+The argument goes this way and not the other way around - modeling in finance **does not start** with the assumption of a stochastic process for $S_t$ and has little to do with Brownian motion(interesting remark).
+
+### 1.2 Delta hedging - ineffective ?
+
+If 2 B&S assumptions are met:
+
+-   The underlying security is a lognormal process with volatility $\sigma$ that is also used for pricing
+
+-   We take limit $\delta t \to 0$
+
+Then the sum of all $P\&L$ over the option's time vanishes with probability 1.
+
+Obviously this is not the case in real life as the security is not necessarily diffusive lognormal, volatility is not necessarily accurate and trading is done discretely in time.
+
+The condition that the final $P\&L$ vanishes requires the following equality:
+
+$$
+\left<\int_0^T e^{-rt} S^2 \frac{d^2P_{\hat{\sigma}}}{dS^2} \sigma_t^2 \right> = \left<\int_0^T e^{-rt} S^2 \frac{d^2P_{\hat{\sigma}}}{dS^2} \hat{\sigma}^2 \right>
+$$
+
+where $\sigma_t$ is the instantaneous **realized** volatility, defined by: $\displaystyle \sigma_t^2 \delta t = \frac{\delta S^2_t}{S_t^2}$ and $\hat{\sigma}$ is the implied volatility used for pricing
